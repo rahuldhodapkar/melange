@@ -2,3 +2,6 @@
 
 export(load.rsem)
 importFrom(hashmap,hashmap)
+importFrom(utils,read.table)
+importFrom(utils,setTxtProgressBar)
+importFrom(utils,txtProgressBar)

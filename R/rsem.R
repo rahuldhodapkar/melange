@@ -31,6 +31,9 @@
 #' }
 #'
 #' @importFrom hashmap hashmap
+#' @importFrom utils read.table
+#' @importFrom utils txtProgressBar
+#' @importFrom utils setTxtProgressBar
 #'
 #' @rdname load.rsem
 #' @export load.rsem
@@ -47,7 +50,7 @@ load.rsem <- function(cells, rsem.filenames) {
     for (i in 1:length(cells)) {
         temp_df <- read.table(rsem.filenames[[i]], header = TRUE, sep = "\t")
         temp_df$lengthScaledTPM <- temp_df$TPM / temp_df$effective_length;
-        temp_df <- subset(temp_df, lengthScaledTPM > 0)
+        temp_df <- temp_df[temp_df$lengthScaledTPM > 0,]
 
         temp_map <- hashmap(
             as.character(temp_df$gene_id),

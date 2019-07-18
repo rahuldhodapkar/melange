@@ -20,3 +20,7 @@ test:
 	echo "devtools::test()" | R --no-save
 build:
 	echo "devtools::load_all()" | R --no-save
+check:
+	echo "devtools::check()" | R --no-save
+release:
+	echo "devtools::release()" | R --no-save

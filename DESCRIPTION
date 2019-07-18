@@ -1,16 +1,16 @@
 Package: melange
+Version: 0.1.0.9000
 Title: Multi-Modal Data Import Utilities for Seurat
-Version: 0.0.0.9000
 Authors@R: 
     person(given = "Rahul",
            family = "Dhodapkar",
            role = c("aut", "cre"),
            email = "rahul.dhodapkar@yale.edu",
            comment = c(ORCID = "0000-0002-2014-7515"))
-Description: 
-    melange is an extensible tool for loading data from multiple input
-    formats to Seurat for unified analysis and visualization
-License: GNU Affero GPV v3.0
+Description: melange is an extensible tool for loading data 
+    from multiple input formats to Seurat for unified analysis and visualization. By providing robust access layers, melange
+    aims to accelerate the progress of single cell omics research.
+License: AGPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -19,6 +19,5 @@ Imports:
     dplyr,
     hashmap
 Suggests:
-    Biocore,
     testthat
 RoxygenNote: 6.1.1.9000
