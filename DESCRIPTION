@@ -1,5 +1,5 @@
 Package: melange
-Version: 0.1.0.9000
+Version: 0.1.0
 Title: Multi-Modal Data Import Utilities for Seurat
 Authors@R: 
     person(given = "Rahul",
@@ -7,9 +7,10 @@ Authors@R:
            role = c("aut", "cre"),
            email = "rahul.dhodapkar@yale.edu",
            comment = c(ORCID = "0000-0002-2014-7515"))
-Description: melange is an extensible tool for loading data 
-    from multiple input formats to Seurat for unified analysis and visualization. By providing robust access layers, melange
-    aims to accelerate the progress of single cell omics research.
+Description: A extensible toolkit for loading data 
+    from multiple input formats to Seurat for unified analysis and visualization. 
+    By providing robust access layers for multiple data sources, 'melange'
+    aims to accelerate the progress of research.
 License: AGPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
