@@ -11,7 +11,7 @@ Description: A extensible toolkit for loading data
     from multiple input formats to Seurat for unified analysis and visualization. 
     By providing robust access layers for multiple data sources, 'melange'
     aims to accelerate the progress of research.
-License: AGPL-3 + file LICENSE
+License: AGPL-3
 Encoding: UTF-8
 LazyData: true
 Imports:
