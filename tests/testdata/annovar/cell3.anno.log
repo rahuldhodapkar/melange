@@ -1,0 +1,14 @@
+ANNOVAR Version:
+	$Date: 2018-04-16 00:43:31 -0400 (Mon, 16 Apr 2018) $
+ANNOVAR Information:
+	For questions, comments, documentation, bug reports and program update, please visit http://www.openbioinformatics.org/annovar/
+ANNOVAR Command:
+	/home/rd389/bin/rd389_annotate_variation.pl -out anno -build human_g1k_v37_decoy_ercc raw.avinput /home/rd389/scratch60/refseq/annovar/
+ANNOVAR Started:
+	Sun Jul 21 13:08:40 2019
+NOTICE: The --geneanno operation is set to ON by default
+NOTICE: Output files were written to anno.variant_function, anno.exonic_variant_function
+NOTICE: Reading gene annotation from /home/rd389/scratch60/refseq/annovar/human_g1k_v37_decoy_ercc_refGene.txt ... Done with 215262 transcripts (including 110499 without coding sequence annotation) for 63769 unique genes
+NOTICE: Processing next batch with 4165 unique variants in 4165 input lines
+NOTICE: Reading FASTA sequences from /home/rd389/scratch60/refseq/annovar/human_g1k_v37_decoy_ercc_refGeneMrna.fa ... Done with 1590 sequences
+WARNING: A total of 6779 sequences will be ignored due to lack of correct ORF annotation
