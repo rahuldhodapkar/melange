@@ -25,12 +25,12 @@ annovar_files_fullpath <- paste(dname, annovar_files, sep="/")
 
 germline.filename <- paste(dname, 'germline.anno.variant_function', sep='/')
 
-annovar_matrix <- load.annovar(
+annovar_assay <- load.annovar(
     cells=cells,
     annovar.filenames=annovar_files_fullpath,
     germline.filename=germline.filename
 )
 
-test_that("RSEM files to Assay", {
-  expect_is(annovar_matrix, "Assay")
+test_that("RSEM files to Seurat Assay", {
+  expect_is(annovar_assay, "Assay")
 })

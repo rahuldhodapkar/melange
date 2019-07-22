@@ -23,10 +23,10 @@ cells <- c("cell1", "cell2", "cell3")
 rsem_files <- paste(cells, "rsem_quant.genes.results", sep=".")
 rsem_files_fullpath <- paste(dname, rsem_files, sep="/")
 
-rsem_matrix <- load.rsem(cells = cells, rsem.filenames = rsem_files_fullpath)
+rsem_assay <- load.rsem(cells = cells, rsem.filenames = rsem_files_fullpath)
 
-test_that("RSEM files to matrix", {
-  expect_is(rsem_matrix, "matrix")
-  expect_equal(rsem_matrix["ERCC-00136","cell1"], 663.68 / 777.31)
-  expect_equal(rsem_matrix["ERCC-00136","cell2"], 0)
+test_that("RSEM files to Seurat Assay", {
+  expect_is(rsem_assay, "Assay")
+  expect_equal(rsem_assay@counts["ERCC-00136","cell1"], 663.68 / 777.31)
+  expect_equal(rsem_assay@counts["ERCC-00136","cell2"], 0)
 })

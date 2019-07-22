@@ -34,6 +34,8 @@
 #' @importFrom utils read.table
 #' @importFrom utils txtProgressBar
 #' @importFrom utils setTxtProgressBar
+#' @importFrom methods new
+#' @importClassesFrom Seurat Assay
 #'
 #' @rdname load.rsem
 #' @export load.rsem
@@ -78,5 +80,16 @@ load.rsem <- function(cells, rsem.filenames) {
 
     close(pb)
 
-    return(M)
+    rsem_assay <- new(
+        Class = "Assay",
+        counts = M,
+        data = M,
+        scale.data = M,
+        key = 'RNA',
+        misc = list(
+            meta.data = data.frame(row.names = colnames(x = M))
+        )
+    )
+
+    return(rsem_assay)
 }
