@@ -31,6 +31,6 @@ annovar_matrix <- load.annovar(
     germline.filename=germline.filename
 )
 
-test_that("RSEM files to matrix", {
-  expect_is(annovar_matrix, "matrix")
+test_that("RSEM files to Assay", {
+  expect_is(annovar_matrix, "Assay")
 })

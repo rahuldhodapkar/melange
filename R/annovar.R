@@ -46,7 +46,7 @@ generate.varid.from.annovar.vff <- function(df) {
 #'
 group_by_gene <- function(df) {
     GENE_COL <- 2
-    df$clean.gene.col <- gsub("\\(.*","", df[,GENE_COL])
+    df$clean.gene.col <- gsub("[\\(\\,\\;].*","", df[,GENE_COL])
     freq.table <- as.data.frame(table(df$clean.gene.col))
     return(hashmap(as.character(freq.table[,1]),freq.table[,2]))
 }
@@ -90,6 +90,8 @@ group_by_gene <- function(df) {
 #' @importFrom utils read.table
 #' @importFrom utils txtProgressBar
 #' @importFrom utils setTxtProgressBar
+#' @importFrom methods new
+#' @importClassesFrom Seurat Assay
 #'
 #' @rdname load.annovar
 #' @export load.annovar
@@ -113,23 +115,40 @@ load.annovar <- function(cells, annovar.filenames,
         style = 3)
 
     grouped_count_maps <- c()
+    germline_counts <- c()
+    total_counts <- c()
+    spike_in_counts <- c()
+    somatic_counts <- c()
 
     for (i in 1:length(cells)) {
         temp_df <- read.table(annovar.filenames[[i]], header = FALSE, sep = "\t")
         temp_varstrings <- generate.varid.from.annovar.vff(temp_df)
 
-        germline_hits <- is.na(germ.map[[temp_varstrings]])
+        germline_hits <- ! is.na(germ.map[[temp_varstrings]])
         num_germline_hits <- sum(germline_hits, na.rm = TRUE)
+        num_spike_in_hits <- sum(grepl(spike.in.regex, temp_varstrings), na.rm=TRUE)
+        num_total_hits <- nrow(temp_df)
+        num_somatic_hits <- sum(is.na(germ.map[[temp_varstrings]]), na.rm = TRUE)
 
         if (somatic.only) {
-            temp_df <- temp_df[!is.na(germ.map[[temp_varstrings]]),]
+            temp_df <- temp_df[is.na(germ.map[[temp_varstrings]]),]
         }
+
+        germline_counts <- c(germline_counts, num_germline_hits)
+        total_counts <- c(total_counts, num_total_hits)
+        spike_in_counts <- c(spike_in_counts, num_spike_in_hits)
+        somatic_counts <- c(somatic_counts, num_somatic_hits)
 
         temp_counts_map <- group_by_gene(temp_df)
         grouped_count_maps <- c(grouped_count_maps, temp_counts_map)
 
         setTxtProgressBar(pb, i)
     }
+
+    cell2germ_ct <- hashmap(cells, germline_counts)
+    cell2total_ct <- hashmap(cells, total_counts)
+    cell2spike_ct <- hashmap(cells, spike_in_counts)
+    cell2som_ct <- hashmap(cells, somatic_counts)
 
     nonzero_keys <- unique(
         c(unlist(sapply(grouped_count_maps, function(a) a$keys())))
@@ -144,10 +163,25 @@ load.annovar <- function(cells, annovar.filenames,
         colvals[is.na(colvals)] <- 0
         M[,i] = colvals
     }
-
     close(pb)
 
-    return(M)
+    annovar_assay <- new(
+        Class = "Assay",
+        counts = M,
+        data = M,
+        scale.data = M,
+        key = 'Annovar',
+        misc = list(
+            meta.data = data.frame(row.names = colnames(x = M))
+        )
+    )
+
+    annovar_assay@misc$meta.data$germline.calls <- cell2germ_ct[[cells]]
+    annovar_assay@misc$meta.data$total.calls <- cell2total_ct[[cells]]
+    annovar_assay@misc$meta.data$spike.in.calls <- cell2spike_ct[[cells]]
+    annovar_assay@misc$meta.data$somatic.calls <- cell2som_ct[[cells]]
+
+    return(annovar_assay)
 }
 
 

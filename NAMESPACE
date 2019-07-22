@@ -2,7 +2,9 @@
 
 export(load.annovar)
 export(load.rsem)
+importClassesFrom(Seurat,Assay)
 importFrom(hashmap,hashmap)
+importFrom(methods,new)
 importFrom(utils,read.table)
 importFrom(utils,setTxtProgressBar)
 importFrom(utils,txtProgressBar)
