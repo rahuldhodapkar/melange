@@ -96,12 +96,13 @@ group_by_gene <- function(df) {
 #' @rdname load.annovar
 #' @export load.annovar
 #'
-load.annovar <- function(cells, annovar.filenames, 
+load.annovar <- function(cells, annovar.filenames, germline.filename,
                             reduction="by_gene", somatic.only=TRUE,
-                            germline.filename=NULL, spike.in.regex="^ERCC-") {
+                            spike.in.regex="^ERCC-") {
 
     if (! is.null(germline.filename) ) {
-        germline_df <- read.table(germline.filename, sep="\t")
+        germline_df <- read.table(germline.filename, 
+                                    comment.char = '', header = FALSE, sep="\t")
         germline_varstrings <- generate.varid.from.annovar.vff(germline_df)
     } else {
         germline_varstrings = c()
@@ -121,7 +122,8 @@ load.annovar <- function(cells, annovar.filenames,
     somatic_counts <- c()
 
     for (i in 1:length(cells)) {
-        temp_df <- read.table(annovar.filenames[[i]], header = FALSE, sep = "\t")
+        temp_df <- read.table(annovar.filenames[[i]], 
+                                comment.char = '', header = FALSE, sep = "\t")
         temp_varstrings <- generate.varid.from.annovar.vff(temp_df)
 
         germline_hits <- ! is.na(germ.map[[temp_varstrings]])

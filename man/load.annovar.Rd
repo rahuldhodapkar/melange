@@ -4,8 +4,8 @@
 \alias{load.annovar}
 \title{Load data from annovar-annotated variant calls.}
 \usage{
-load.annovar(cells, annovar.filenames, reduction = "by_gene",
-  somatic.only = TRUE, germline.filename = NULL,
+load.annovar(cells, annovar.filenames, germline.filename,
+  reduction = "by_gene", somatic.only = TRUE,
   spike.in.regex = "^ERCC-")
 }
 \arguments{
@@ -13,15 +13,15 @@ load.annovar(cells, annovar.filenames, reduction = "by_gene",
 
 \item{annovar.filenames}{character vector containing annovar file paths.}
 
+\item{germline.filename}{file path for annovar file containing germline 
+variants. Used as a positive control for single-cell somatic 
+variant analysis.}
+
 \item{reduction}{reduction to use from annovar to Seurat assay.
 Currently 'by_gene'}
 
 \item{somatic.only}{boolean, default TRUE, produce counts based only
 on predicted somatic variants (subtact germline)}
-
-\item{germline.filename}{file path for annovar file containing germline 
-variants. Used as a positive control for single-cell somatic 
-variant analysis.}
 
 \item{spike.in.regex}{regex selection for 'CHR' vcf field inidcating
 synthetic spike-in. Used as a negative control for single-cell

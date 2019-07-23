@@ -24,3 +24,5 @@ check:
 	echo "devtools::check()" | R --no-save
 release:
 	echo "devtools::release()" | R --no-save
+install:
+	echo "devtools::install('../melange')" | R --no-save
