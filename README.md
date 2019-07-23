@@ -10,3 +10,23 @@ transformation and manipulation utilities for use with the popular
 
 - [RSEM](https://deweylab.github.io/RSEM/) transcript quantitation by gene
 
+- [Annovar](http://annovar.openbioinformatics.org/) variant annotation hits
+    by gene
+
+## Installation Instructions
+
+To install a development release of `melange`, simply clone this repository
+and use `devtools` utilities. For version `3.5.3` of `R`, the invocation is:
+
+    devtools::install("path/to/melange")
+
+At this point, `melange` will be available for use as a normal R package in
+your environment by `library(melange)` when required.
+
+## Developing for melange
+
+If you are working with output of a research script and have developed an
+in-house solution for data integration with your single-cell sequencing
+workflow, please contact us (rahul.dhodapkar at yale.edu). We would love
+to include your work as part of melange so others may benefit from your
+efforts!
