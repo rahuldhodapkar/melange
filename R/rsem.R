@@ -85,7 +85,7 @@ load.rsem <- function(cells, rsem.filenames) {
         counts = M,
         data = M,
         scale.data = M,
-        key = 'RNA',
+        key = 'rna_',
         misc = list(
             meta.data = data.frame(row.names = colnames(x = M))
         )

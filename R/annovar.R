@@ -172,7 +172,7 @@ load.annovar <- function(cells, annovar.filenames, germline.filename,
         counts = M,
         data = M,
         scale.data = M,
-        key = 'Annovar',
+        key = 'annovar_',
         misc = list(
             meta.data = data.frame(row.names = colnames(x = M))
         )
