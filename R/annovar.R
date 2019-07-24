@@ -73,6 +73,8 @@ group_by_gene <- function(df) {
 #'     somatic variant analysis. Default '^ERCC-'
 #' @param somatic.only boolean, default TRUE, produce counts based only
 #'     on predicted somatic variants (subtact germline)
+#' @param exonic.only boolean, default TRUE, produce counts based only
+#'     on variants predicted to occur within exons.
 #' 
 #' @return A matrix containing the reduced counts of each ENSG merged from
 #'     all cells supplied in a Seurat-importable format.
@@ -90,6 +92,7 @@ group_by_gene <- function(df) {
 #' @importFrom utils read.table
 #' @importFrom utils txtProgressBar
 #' @importFrom utils setTxtProgressBar
+#' @importFrom stringr str_detect
 #' @importFrom methods new
 #' @importClassesFrom Seurat Assay
 #'
@@ -98,6 +101,7 @@ group_by_gene <- function(df) {
 #'
 load.annovar <- function(cells, annovar.filenames, germline.filename,
                             reduction="by_gene", somatic.only=TRUE,
+                            exonic.only=TRUE,
                             spike.in.regex="^ERCC-") {
 
     if (! is.null(germline.filename) ) {
@@ -140,6 +144,10 @@ load.annovar <- function(cells, annovar.filenames, germline.filename,
         total_counts <- c(total_counts, num_total_hits)
         spike_in_counts <- c(spike_in_counts, num_spike_in_hits)
         somatic_counts <- c(somatic_counts, num_somatic_hits)
+
+        if (exonic.only) {
+            temp_df <- temp_df[str_detect(temp_df[,1], "exonic"),]
+        }
 
         temp_counts_map <- group_by_gene(temp_df)
         grouped_count_maps <- c(grouped_count_maps, temp_counts_map)

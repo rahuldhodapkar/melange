@@ -5,7 +5,7 @@
 \title{Load data from annovar-annotated variant calls.}
 \usage{
 load.annovar(cells, annovar.filenames, germline.filename,
-  reduction = "by_gene", somatic.only = TRUE,
+  reduction = "by_gene", somatic.only = TRUE, exonic.only = TRUE,
   spike.in.regex = "^ERCC-")
 }
 \arguments{
@@ -22,6 +22,9 @@ Currently 'by_gene'}
 
 \item{somatic.only}{boolean, default TRUE, produce counts based only
 on predicted somatic variants (subtact germline)}
+
+\item{exonic.only}{boolean, default TRUE, produce counts based only
+on variants predicted to occur within exons.}
 
 \item{spike.in.regex}{regex selection for 'CHR' vcf field inidcating
 synthetic spike-in. Used as a negative control for single-cell
