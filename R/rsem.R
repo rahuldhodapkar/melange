@@ -16,7 +16,7 @@
 
 #' Load Data from RSEM transcript quantitation.
 #'
-#' \code{load_rsem} loads rsem data for the provided cell to file mapping
+#' \code{LoadRSEM} loads rsem data for the provided cell to file mapping
 #'
 #' @param cells character vector containing cell IDs
 #' @param rsem.filenames character vector containing RSEM file paths.
@@ -27,7 +27,7 @@
 #' @examples
 #'
 #' \dontrun{
-#' load_rsem(c('1', '2', '3'), c('1.rsem', '2.rsem', '3.rsem'))
+#' LoadRSEM(c('1', '2', '3'), c('1.rsem', '2.rsem', '3.rsem'))
 #' }
 #'
 #' @importFrom hashmap hashmap
@@ -37,10 +37,10 @@
 #' @importFrom methods new
 #' @importClassesFrom Seurat Assay
 #'
-#' @rdname load.rsem
-#' @export load.rsem
+#' @rdname LoadRSEM
+#' @export LoadRSEM
 #'
-load.rsem <- function(cells, rsem.filenames) {
+LoadRSEM <- function(cells, rsem.filenames) {
     # create progress bar
     pb <- txtProgressBar(min = 0,
         label = "Reading Expression from RSEM Files",

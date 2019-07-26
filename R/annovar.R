@@ -23,7 +23,7 @@
 #' @return A vector containing all unique variant identifiers present
 #'      in an annovar variant file.
 #'
-generate.varid.from.annovar.vff <- function(df) {
+GenerateVaridFromAnnovarVFF <- function(df) {
     colname2ix <- hashmap(
         c("CHR", "POS_START", "POS_END", "REF", "ALT"),
         c(    3,           4,         5,     6,     7)
@@ -44,7 +44,7 @@ generate.varid.from.annovar.vff <- function(df) {
 #'
 #' @return A hashmap from gene name -> variant counts
 #'
-group_by_gene <- function(df) {
+GroupByGene <- function(df) {
     GENE_COL <- 2
     df$clean.gene.col <- gsub("[\\(\\,\\;].*","", df[,GENE_COL])
     freq.table <- as.data.frame(table(df$clean.gene.col))
@@ -53,11 +53,11 @@ group_by_gene <- function(df) {
 
 #' Load data from annovar-annotated variant calls.
 #'
-#' \code{load.annovar} loads Annovar data for the provided cell to file mapping.
+#' \code{LoadAnnovar} loads Annovar data for the provided cell to file mapping.
 #' By default, does not perfom any quality control on variant call files.
-#' \code{load.annovar} should be provided \code{*.variant_function} files
+#' \code{LoadAnnovar} should be provided \code{*.variant_function} files
 #' for each cell. If additional exonic functional pruning is required,
-#' \code{load.annovar} will automatically extract the location of the corresponding
+#' \code{LoadAnnovar} will automatically extract the location of the corresponding
 #' \code{*.exonic_variant_function} file locally.
 #'
 #' @param cells character vector containing cell IDs
@@ -82,7 +82,7 @@ group_by_gene <- function(df) {
 #' @examples
 #' \dontrun{
 #' 
-#' load.annovar(c('1', '2'), 
+#' LoadAnnovar(c('1', '2'),
 #'     c('1.anno.variant_function', '2.anno.variant_function')
 #' )
 #' 
@@ -96,10 +96,10 @@ group_by_gene <- function(df) {
 #' @importFrom methods new
 #' @importClassesFrom Seurat Assay
 #'
-#' @rdname load.annovar
-#' @export load.annovar
+#' @rdname LoadAnnovar
+#' @export LoadAnnovar
 #'
-load.annovar <- function(cells, annovar.filenames, germline.filename,
+LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
                             reduction="by_gene", somatic.only=TRUE,
                             exonic.only=TRUE,
                             spike.in.regex="^ERCC-") {
@@ -107,7 +107,7 @@ load.annovar <- function(cells, annovar.filenames, germline.filename,
     if (! is.null(germline.filename) ) {
         germline_df <- read.table(germline.filename, 
                                     comment.char = '', header = FALSE, sep="\t")
-        germline_varstrings <- generate.varid.from.annovar.vff(germline_df)
+        germline_varstrings <- GenerateVaridFromAnnovarVFF(germline_df)
     } else {
         germline_varstrings = c()
     }
@@ -128,7 +128,7 @@ load.annovar <- function(cells, annovar.filenames, germline.filename,
     for (i in 1:length(cells)) {
         temp_df <- read.table(annovar.filenames[[i]], 
                                 comment.char = '', header = FALSE, sep = "\t")
-        temp_varstrings <- generate.varid.from.annovar.vff(temp_df)
+        temp_varstrings <- GenerateVaridFromAnnovarVFF(temp_df)
 
         germline_hits <- ! is.na(germ.map[[temp_varstrings]])
         num_germline_hits <- sum(germline_hits, na.rm = TRUE)
@@ -149,7 +149,7 @@ load.annovar <- function(cells, annovar.filenames, germline.filename,
             temp_df <- temp_df[str_detect(temp_df[,1], "exonic"),]
         }
 
-        temp_counts_map <- group_by_gene(temp_df)
+        temp_counts_map <- GroupByGene(temp_df)
         grouped_count_maps <- c(grouped_count_maps, temp_counts_map)
 
         setTxtProgressBar(pb, i)

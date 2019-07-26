@@ -20,13 +20,13 @@ library(melange)
 dname = "../testdata/rsem"
 
 cells <- c("cell1", "cell2", "cell3")
-rsem_files <- paste(cells, "rsem_quant.genes.results", sep=".")
-rsem_files_fullpath <- paste(dname, rsem_files, sep="/")
+rsem.files <- paste(cells, "rsem_quant.genes.results", sep=".")
+rsem.files.fullpath <- paste(dname, rsem.files, sep="/")
 
-rsem_assay <- load.rsem(cells = cells, rsem.filenames = rsem_files_fullpath)
+rsem.assay <- LoadRSEM(cells = cells, rsem.filenames = rsem.files.fullpath)
 
 test_that("RSEM files to Seurat Assay", {
-  expect_is(rsem_assay, "Assay")
-  expect_equal(rsem_assay@counts["ERCC-00136","cell1"], 663.68 / 777.31)
-  expect_equal(rsem_assay@counts["ERCC-00136","cell2"], 0)
+  expect_is(rsem.assay, "Assay")
+  expect_equal(rsem.assay@counts["ERCC-00136","cell1"], 663.68 / 777.31)
+  expect_equal(rsem.assay@counts["ERCC-00136","cell2"], 0)
 })

@@ -20,17 +20,17 @@ library(melange)
 dname = "../testdata/annovar"
 
 cells <- c("cell1", "cell2", "cell3")
-annovar_files <- paste(cells, "anno.variant_function", sep=".")
-annovar_files_fullpath <- paste(dname, annovar_files, sep="/")
+annovar.files <- paste(cells, "anno.variant_function", sep=".")
+annovar.files.fullpath <- paste(dname, annovar.files, sep="/")
 
 germline.filename <- paste(dname, 'germline.anno.variant_function', sep='/')
 
-annovar_assay <- load.annovar(
+annovar.assay <- LoadAnnovar(
     cells=cells,
-    annovar.filenames=annovar_files_fullpath,
+    annovar.filenames=annovar.files.fullpath,
     germline.filename=germline.filename
 )
 
 test_that("RSEM files to Seurat Assay", {
-  expect_is(annovar_assay, "Assay")
+  expect_is(annovar.assay, "Assay")
 })
