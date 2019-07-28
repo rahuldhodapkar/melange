@@ -19,8 +19,8 @@ Imports:
     Seurat,
     dplyr,
     hashmap,
-    methods,
-    stringr
+    stringr,
+    stats
 Suggests:
     testthat
 RoxygenNote: 6.1.1.9000

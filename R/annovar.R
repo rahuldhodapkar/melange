@@ -41,14 +41,21 @@ GenerateVaridFromAnnovarVFF <- function(df) {
 #' Helper function to group variants by gene.
 #'
 #' @param df dataframe read from annovar output file
+#' @param read.depth.norm.col integer, column to use for normalization of variant
+#'      call rates.
 #'
 #' @return A hashmap from gene name -> variant counts
 #'
-GroupByGene <- function(df) {
+#' @importFrom stats aggregate
+#'
+GroupByGene <- function(df, read.depth.norm.col) {
     GENE_COL <- 2
     df$clean.gene.col <- gsub("[\\(\\,\\;].*","", df[,GENE_COL])
-    freq.table <- as.data.frame(table(df$clean.gene.col))
-    return(hashmap(as.character(freq.table[,1]),freq.table[,2]))
+    norm.data <- aggregate(df[,read.depth.norm.col],
+        by=list(Gene=df$clean.gene.col), FUN=sum)
+    return(list(
+        norm=hashmap(as.character(norm.data[,1]),norm.data[,2])
+    ))
 }
 
 #' Load data from annovar-annotated variant calls.
@@ -75,7 +82,10 @@ GroupByGene <- function(df) {
 #'     on predicted somatic variants (subtact germline)
 #' @param exonic.only boolean, default TRUE, produce counts based only
 #'     on variants predicted to occur within exons.
-#' 
+#' @param read.depth.norm.col, default 10, col with read depth to normalize
+#'     variant calls by for single cell analysis. If using the default
+#'     Annovar conversion tools from VCF, this will most likely be column 10.
+#'
 #' @return A matrix containing the reduced counts of each ENSG merged from
 #'     all cells supplied in a Seurat-importable format.
 #'
@@ -93,15 +103,14 @@ GroupByGene <- function(df) {
 #' @importFrom utils txtProgressBar
 #' @importFrom utils setTxtProgressBar
 #' @importFrom stringr str_detect
-#' @importFrom methods new
-#' @importClassesFrom Seurat Assay
+#' @importFrom Seurat CreateAssayObject
 #'
 #' @rdname LoadAnnovar
 #' @export LoadAnnovar
 #'
 LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
                             reduction="by_gene", somatic.only=TRUE,
-                            exonic.only=TRUE,
+                            exonic.only=TRUE, read.depth.norm.col=10,
                             spike.in.regex="^ERCC-") {
 
     if (! is.null(germline.filename) ) {
@@ -149,7 +158,10 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
             temp_df <- temp_df[str_detect(temp_df[,1], "exonic"),]
         }
 
-        temp_counts_map <- GroupByGene(temp_df)
+        group_out <- GroupByGene(temp_df, 
+            read.depth.norm.col=read.depth.norm.col)
+        temp_counts_map <- group_out$norm
+
         grouped_count_maps <- c(grouped_count_maps, temp_counts_map)
 
         setTxtProgressBar(pb, i)
@@ -175,23 +187,13 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
     }
     close(pb)
 
-    annovar_assay <- new(
-        Class = "Assay",
-        counts = M,
-        data = M,
-        scale.data = M,
-        key = 'annovar_',
-        misc = list(
-            meta.data = data.frame(row.names = colnames(x = M))
-        )
-    )
+    annovar.assay <- CreateAssayObject(data=M)
+    annovar.assay@misc$meta.data$germline.calls <- cell2germ_ct[[cells]]
+    annovar.assay@misc$meta.data$total.calls <- cell2total_ct[[cells]]
+    annovar.assay@misc$meta.data$spike.in.calls <- cell2spike_ct[[cells]]
+    annovar.assay@misc$meta.data$somatic.calls <- cell2som_ct[[cells]]
 
-    annovar_assay@misc$meta.data$germline.calls <- cell2germ_ct[[cells]]
-    annovar_assay@misc$meta.data$total.calls <- cell2total_ct[[cells]]
-    annovar_assay@misc$meta.data$spike.in.calls <- cell2spike_ct[[cells]]
-    annovar_assay@misc$meta.data$somatic.calls <- cell2som_ct[[cells]]
-
-    return(annovar_assay)
+    return(annovar.assay)
 }
 
 

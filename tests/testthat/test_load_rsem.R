@@ -27,6 +27,6 @@ rsem.assay <- LoadRSEM(cells = cells, rsem.filenames = rsem.files.fullpath)
 
 test_that("RSEM files to Seurat Assay", {
   expect_is(rsem.assay, "Assay")
-  expect_equal(rsem.assay@counts["ERCC-00136","cell1"], 663.68 / 777.31)
-  expect_equal(rsem.assay@counts["ERCC-00136","cell2"], 0)
+  expect_equal(rsem.assay@data["ERCC-00136","cell1"], 663.68 / 777.31)
+  expect_equal(rsem.assay@data["ERCC-00136","cell2"], 0)
 })

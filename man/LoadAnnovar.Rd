@@ -6,7 +6,7 @@
 \usage{
 LoadAnnovar(cells, annovar.filenames, germline.filename,
   reduction = "by_gene", somatic.only = TRUE, exonic.only = TRUE,
-  spike.in.regex = "^ERCC-")
+  read.depth.norm.col = 10, spike.in.regex = "^ERCC-")
 }
 \arguments{
 \item{cells}{character vector containing cell IDs}
@@ -25,6 +25,10 @@ on predicted somatic variants (subtact germline)}
 
 \item{exonic.only}{boolean, default TRUE, produce counts based only
 on variants predicted to occur within exons.}
+
+\item{read.depth.norm.col, }{default 10, col with read depth to normalize
+variant calls by for single cell analysis. If using the default
+Annovar conversion tools from VCF, this will most likely be column 10.}
 
 \item{spike.in.regex}{regex selection for 'CHR' vcf field inidcating
 synthetic spike-in. Used as a negative control for single-cell
@@ -45,7 +49,7 @@ for each cell. If additional exonic functional pruning is required,
 \examples{
 \dontrun{
 
-LoadAnnovar(c('1', '2'), 
+LoadAnnovar(c('1', '2'),
     c('1.anno.variant_function', '2.anno.variant_function')
 )
 

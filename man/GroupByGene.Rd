@@ -4,10 +4,13 @@
 \alias{GroupByGene}
 \title{Helper function to group variants by gene.}
 \usage{
-GroupByGene(df)
+GroupByGene(df, read.depth.norm.col)
 }
 \arguments{
 \item{df}{dataframe read from annovar output file}
+
+\item{read.depth.norm.col}{integer, column to use for normalization of variant
+call rates.}
 }
 \value{
 A hashmap from gene name -> variant counts
