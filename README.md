@@ -23,6 +23,13 @@ and use `devtools` utilities. For version `3.5.3` of `R`, the invocation is:
 At this point, `melange` will be available for use as a normal R package in
 your environment by `library(melange)` when required.
 
+To simplify the installation process, you can also navigate to the cloned
+melange directory and use:
+
+    make install
+
+which will run the above installation.
+
 ## Developing for melange
 
 If you are working with output of a research script and have developed an
