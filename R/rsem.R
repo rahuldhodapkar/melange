@@ -14,12 +14,31 @@
 #     You should have received a copy of the GNU Affero General Public License
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+
+#' Internal method to scale expression data
+#'
+#' @param df data frame containing individual RSEM file output
+#' @param scaling.method switch containing scaling options
+#'
+#' @return a scaled vector of counts
+ScaleReadData <- function(df, scaling.method) {
+    if(scaling.method == "TPM") {
+        return(df$TPM)
+    } else if (scaling.method == "lengthScaledTPM") {
+        return(df$TPM / df$effective_length)
+    }
+}
+
+
+
 #' Load Data from RSEM transcript quantitation.
 #'
 #' \code{LoadRSEM} loads rsem data for the provided cell to file mapping
 #'
 #' @param cells character vector containing cell IDs
 #' @param rsem.filenames character vector containing RSEM file paths.
+#' @param scaling.method String, default 'TPM', returns raw TPM from RSEM
+#'              files. 'lengthScaledTPM' also available
 #' 
 #' @return A matrix containing the FPKM counts of each ENSG merged from
 #'     all cells supplied in a Seurat-importable format.
@@ -39,7 +58,7 @@
 #' @rdname LoadRSEM
 #' @export LoadRSEM
 #'
-LoadRSEM <- function(cells, rsem.filenames) {
+LoadRSEM <- function(cells, rsem.filenames, scaling.method='TPM') {
     # create progress bar
     pb <- txtProgressBar(min = 0,
         label = "Reading Expression from RSEM Files",
@@ -50,12 +69,13 @@ LoadRSEM <- function(cells, rsem.filenames) {
 
     for (i in 1:length(cells)) {
         temp_df <- read.table(rsem.filenames[[i]], header = TRUE, sep = "\t")
-        temp_df$lengthScaledTPM <- temp_df$TPM / temp_df$effective_length;
-        temp_df <- temp_df[temp_df$lengthScaledTPM > 0,]
+
+        temp_df$scaled <- ScaleReadData(temp_df, scaling.method)
+        temp_df <- temp_df[temp_df$scaled > 0,]
 
         temp_map <- hashmap(
             as.character(temp_df$gene_id),
-            temp_df$lengthScaledTPM
+            temp_df$scaled
         )
 
         nonzero_cell_maps <- c(nonzero_cell_maps, temp_map)
