@@ -26,12 +26,18 @@ rsem.files.fullpath <- paste(dname, rsem.files, sep="/")
 rsem.assay.lengthScaledTPM <- LoadRSEM(
     cells = cells,
     rsem.filenames = rsem.files.fullpath,
-    scaling.method = 'lengthScaledTPM')
+    quantitation.method = 'lengthScaledTPM')
 
 rsem.assay.TPM <- LoadRSEM(
     cells = cells,
     rsem.filenames = rsem.files.fullpath,
-    scaling.method = 'TPM'
+    quantitation.method = 'TPM'
+)
+
+rsem.assay.count <- LoadRSEM(
+    cells = cells,
+    rsem.filenames = rsem.files.fullpath,
+    quantitation.method = 'count'
 )
 
 test_that("RSEM files to Seurat Assay", {
@@ -46,3 +52,8 @@ test_that("TPM generates correct counts", {
   expect_equal(rsem.assay.TPM@data["ERCC-00136","cell1"], 663.68)
   expect_equal(rsem.assay.TPM@data["ERCC-00136","cell2"], 0)
 })
+test_that("count generates correct counts", {
+  expect_equal(rsem.assay.count@data["ERCC-00136","cell1"], 83.0)
+  expect_equal(rsem.assay.count@data["ERCC-00136","cell2"], 0)
+})
+

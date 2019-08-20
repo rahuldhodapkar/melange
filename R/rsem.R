@@ -14,22 +14,21 @@
 #     You should have received a copy of the GNU Affero General Public License
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
-#' Internal method to scale expression data
+#' Internal method to extract expression data
 #'
 #' @param df data frame containing individual RSEM file output
 #' @param scaling.method switch containing scaling options
 #'
 #' @return a scaled vector of counts
-ScaleReadData <- function(df, scaling.method) {
-    if(scaling.method == "TPM") {
+ExtractQuantitationData <- function(df, scaling.method) {
+    if (scaling.method == "count") {
+        return(df$expected_count)
+    } else if (scaling.method == "TPM") {
         return(df$TPM)
     } else if (scaling.method == "lengthScaledTPM") {
         return(df$TPM / df$effective_length)
     }
 }
-
-
 
 #' Load Data from RSEM transcript quantitation.
 #'
@@ -37,8 +36,8 @@ ScaleReadData <- function(df, scaling.method) {
 #'
 #' @param cells character vector containing cell IDs
 #' @param rsem.filenames character vector containing RSEM file paths.
-#' @param scaling.method String, default 'TPM', returns raw TPM from RSEM
-#'              files. 'lengthScaledTPM' also available
+#' @param quantitation.method String, default 'count', returns expected
+#'     counts from RSEM files. 'TPM' also supported.
 #' 
 #' @return A matrix containing the FPKM counts of each ENSG merged from
 #'     all cells supplied in a Seurat-importable format.
@@ -58,7 +57,7 @@ ScaleReadData <- function(df, scaling.method) {
 #' @rdname LoadRSEM
 #' @export LoadRSEM
 #'
-LoadRSEM <- function(cells, rsem.filenames, scaling.method='TPM') {
+LoadRSEM <- function(cells, rsem.filenames, quantitation.method='count') {
     # create progress bar
     pb <- txtProgressBar(min = 0,
         label = "Reading Expression from RSEM Files",
@@ -70,7 +69,7 @@ LoadRSEM <- function(cells, rsem.filenames, scaling.method='TPM') {
     for (i in 1:length(cells)) {
         temp_df <- read.table(rsem.filenames[[i]], header = TRUE, sep = "\t")
 
-        temp_df$scaled <- ScaleReadData(temp_df, scaling.method)
+        temp_df$scaled <- ExtractQuantitationData(temp_df, quantitation.method)
         temp_df <- temp_df[temp_df$scaled > 0,]
 
         temp_map <- hashmap(
