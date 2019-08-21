@@ -39,7 +39,7 @@ ExtractQuantitationData <- function(df, scaling.method) {
 #' @param quantitation.method String, default 'count', returns expected
 #'     counts from RSEM files. 'TPM' also supported.
 #' 
-#' @return A matrix containing the FPKM counts of each ENSG merged from
+#' @return A matrix containing the TPM counts of each ENSG merged from
 #'     all cells supplied in a Seurat-importable format.
 #'
 #' @examples

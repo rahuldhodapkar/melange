@@ -15,7 +15,7 @@ LoadRSEM(cells, rsem.filenames, quantitation.method = "TPM")
 counts from RSEM files. 'TPM' also supported.}
 }
 \value{
-A matrix containing the FPKM counts of each ENSG merged from
+A matrix containing the TPM counts of each ENSG merged from
     all cells supplied in a Seurat-importable format.
 }
 \description{

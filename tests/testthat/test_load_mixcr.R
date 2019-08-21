@@ -1,4 +1,4 @@
-# test_load_annovar.R
+# test_load_mixcr.R
 #     Copyright (C) 2019  Rahul Dhodapkar
 #
 #     This program is free software: you can redistribute it and/or modify
@@ -14,23 +14,24 @@
 #     You should have received a copy of the GNU Affero General Public License
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-context("LoadAnnovar")
+context("LoadMiXCR")
 library(melange)
 
-dname = "../testdata/annovar"
+dname = "../testdata/mixcr"
 
-cells <- c("cell1", "cell2", "cell3")
-annovar.files <- paste(cells, "anno.variant_function", sep=".")
-annovar.files.fullpath <- paste(dname, annovar.files, sep="/")
+cells <- c("cell1", "cell2", "cell3", "cell4", "cell5")
+mixcr.files <- paste(cells, "_clones_TRB.txt", sep="")
+mixcr.files.fullpath <- paste(dname, mixcr.files, sep="/")
 
-germline.filename <- paste(dname, 'germline.anno.variant_function', sep='/')
-
-annovar.assay <- LoadAnnovar(
+mixcr.melange <- LoadMiXCR(
     cells=cells,
-    annovar.filenames=annovar.files.fullpath,
-    germline.filename=germline.filename
+    mixcr.filenames=mixcr.files.fullpath
 )
 
-test_that("Annovar files to Melange", {
-  expect_is(annovar.assay, "Melange")
+test_that("MiXCR files to Melange", {
+  expect_is(mixcr.melange, "Melange")
+})
+
+test_that("Appropriate keys used", {
+    expect_equal(mixcr.melange@data["TGTGCCAGCAGTGGAGACAGGGGGCTTGGAAACACCATATATTTT", "cell5"], 0.0526, tolerance = 1e-2)
 })
