@@ -19,21 +19,19 @@ To install a development release of `melange`, simply clone this repository
 
     git clone git@github.com:rahuldhodapkar/melange.git
 
-and use `devtools` utilities (if you do not have `devtools` installed, you
-can first run `install.packages('devtools')`).
+and use `devtools` utilities. For version `3.5.3` of `R`, the invocation is:
 
-Once `devtools` is installed, navigate to the cloned melange directory
-and run:
+    devtools::install("path/to/melange")
+
+At this point, `melange` will be available for use as a normal R package in
+your environment by `library(melange)` when required.
+
+To simplify the installation process, you can also navigate to the cloned
+melange directory and use:
 
     make install
 
-At this point, `melange` will be available for use as a normal R package in
-your environment by `library(melange)` when required. 
-
-If the make process does not work, or you are running on Windows, 
-`devtools` may be used to directly install `melange` with:
-
-    devtools::install('./melange')
+which will run the above installation.
 
 ## Developing for melange
 
