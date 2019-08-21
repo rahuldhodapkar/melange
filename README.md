@@ -16,6 +16,9 @@ transformation and manipulation utilities for use with the popular
 ## Installation Instructions
 
 To install a development release of `melange`, simply clone this repository
+
+    git clone git@github.com:rahuldhodapkar/melange.git
+
 and use `devtools` utilities. For version `3.5.3` of `R`, the invocation is:
 
     devtools::install("path/to/melange")

@@ -2,8 +2,11 @@
 
 export(LoadAnnovar)
 export(LoadRSEM)
+export(Melange)
+export(SeuratAssayFromMelange)
 importFrom(Seurat,CreateAssayObject)
 importFrom(hashmap,hashmap)
+importFrom(methods,new)
 importFrom(stats,aggregate)
 importFrom(stringr,str_detect)
 importFrom(utils,read.table)

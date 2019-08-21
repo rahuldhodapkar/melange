@@ -187,13 +187,13 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
     }
     close(pb)
 
-    annovar.assay <- CreateAssayObject(data=M)
-    annovar.assay@misc$meta.data$germline.calls <- cell2germ_ct[[cells]]
-    annovar.assay@misc$meta.data$total.calls <- cell2total_ct[[cells]]
-    annovar.assay@misc$meta.data$spike.in.calls <- cell2spike_ct[[cells]]
-    annovar.assay@misc$meta.data$somatic.calls <- cell2som_ct[[cells]]
+    annovar.melange <- Melange(M)
+    annovar.melange@meta.data$germline.calls <- cell2germ_ct[[cells]]
+    annovar.melange@meta.data$total.calls <- cell2total_ct[[cells]]
+    annovar.melange@meta.data$spike.in.calls <- cell2spike_ct[[cells]]
+    annovar.melange@meta.data$somatic.calls <- cell2som_ct[[cells]]
 
-    return(annovar.assay)
+    return(annovar.melange)
 }
 
 

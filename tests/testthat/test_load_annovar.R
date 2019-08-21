@@ -31,6 +31,6 @@ annovar.assay <- LoadAnnovar(
     germline.filename=germline.filename
 )
 
-test_that("RSEM files to Seurat Assay", {
-  expect_is(annovar.assay, "Assay")
+test_that("RSEM files to Melange", {
+  expect_is(annovar.assay, "Melange")
 })

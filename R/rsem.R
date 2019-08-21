@@ -98,8 +98,7 @@ LoadRSEM <- function(cells, rsem.filenames, quantitation.method='count') {
 
     close(pb)
 
-    rsem.assay <- CreateAssayObject(data=M)
-    rsem.assay@misc$meta.data <- data.frame(row.names = colnames(x = M))
+    rsem.melange <- Melange(M)
 
-    return(rsem.assay)
+    return(rsem.melange)
 }

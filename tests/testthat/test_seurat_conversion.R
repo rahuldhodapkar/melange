@@ -1,4 +1,4 @@
-# test_load_rsem.R
+# test_seurat_conversion.R
 #     Copyright (C) 2019  Rahul Dhodapkar
 #
 #     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 #     You should have received a copy of the GNU Affero General Public License
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-context("LoadRSEM")
+context("ConvertToSeurat")
 library(melange)
 
 dname = "../testdata/rsem"
@@ -23,37 +23,25 @@ cells <- c("cell1", "cell2", "cell3")
 rsem.files <- paste(cells, "rsem_quant.genes.results", sep=".")
 rsem.files.fullpath <- paste(dname, rsem.files, sep="/")
 
-rsem.assay.lengthScaledTPM <- LoadRSEM(
+rsem.assay.lengthScaledTPM <- SeuratAssayFromMelange(LoadRSEM(
     cells = cells,
     rsem.filenames = rsem.files.fullpath,
-    quantitation.method = 'lengthScaledTPM')
+    quantitation.method = 'lengthScaledTPM'
+))
 
-rsem.assay.TPM <- LoadRSEM(
+rsem.assay.TPM <- SeuratAssayFromMelange(LoadRSEM(
     cells = cells,
     rsem.filenames = rsem.files.fullpath,
     quantitation.method = 'TPM'
-)
+))
 
-rsem.assay.count <- LoadRSEM(
+rsem.assay.count <- SeuratAssayFromMelange(LoadRSEM(
     cells = cells,
     rsem.filenames = rsem.files.fullpath,
     quantitation.method = 'count'
-)
+))
 
-test_that("RSEM files to Melange", {
-  expect_is(rsem.assay.lengthScaledTPM, "Melange")
-  expect_is(rsem.assay.TPM, "Melange")
+test_that("RSEM files to Seurat Assay from Melange", {
+  expect_is(rsem.assay.lengthScaledTPM, "Assay")
+  expect_is(rsem.assay.TPM, "Assay")
 })
-test_that("lengthScaledTPM generates correct counts", {
-  expect_equal(rsem.assay.lengthScaledTPM@data["ERCC-00136","cell1"], 663.68 / 777.31)
-  expect_equal(rsem.assay.lengthScaledTPM@data["ERCC-00136","cell2"], 0)
-})
-test_that("TPM generates correct counts", {
-  expect_equal(rsem.assay.TPM@data["ERCC-00136","cell1"], 663.68)
-  expect_equal(rsem.assay.TPM@data["ERCC-00136","cell2"], 0)
-})
-test_that("count generates correct counts", {
-  expect_equal(rsem.assay.count@data["ERCC-00136","cell1"], 83.0)
-  expect_equal(rsem.assay.count@data["ERCC-00136","cell2"], 0)
-})
-
