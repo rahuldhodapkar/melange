@@ -1,6 +1,6 @@
 
 * Getting Started
-    * [Installation](README.md "Installing Melange")
+    * [Installation](README.md)
 
 * Vignettes
-    * [RSEM Quantitation](vignettes/rsem.md "Generate Quantitation Data from RSEM files")
+    * [RSEM Quantitation](vignettes/rsem.md)
