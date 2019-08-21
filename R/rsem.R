@@ -57,7 +57,7 @@ ExtractQuantitationData <- function(df, scaling.method) {
 #' @rdname LoadRSEM
 #' @export LoadRSEM
 #'
-LoadRSEM <- function(cells, rsem.filenames, quantitation.method='count') {
+LoadRSEM <- function(cells, rsem.filenames, quantitation.method='TPM') {
     # create progress bar
     pb <- txtProgressBar(min = 0,
         label = "Reading Expression from RSEM Files",

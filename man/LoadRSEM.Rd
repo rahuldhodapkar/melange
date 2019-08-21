@@ -4,7 +4,7 @@
 \alias{LoadRSEM}
 \title{Load Data from RSEM transcript quantitation.}
 \usage{
-LoadRSEM(cells, rsem.filenames, quantitation.method = "count")
+LoadRSEM(cells, rsem.filenames, quantitation.method = "TPM")
 }
 \arguments{
 \item{cells}{character vector containing cell IDs}
