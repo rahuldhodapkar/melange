@@ -39,6 +39,8 @@ ExtractQuantitationData <- function(df, scaling.method) {
 #' @param rsem.filenames character vector containing RSEM file paths.
 #' @param quantitation.method String, default 'count', returns expected
 #'     counts from RSEM files. 'TPM' also supported.
+#' @param min.quant.value numeric, containing the minimum quantitation
+#'     a gene must have to be included in the output \code{@data} matrix
 #' 
 #' @return A matrix containing the TPM counts of each ENSG merged from
 #'     all cells supplied in a Seurat-importable format.
@@ -58,41 +60,43 @@ ExtractQuantitationData <- function(df, scaling.method) {
 #' @rdname LoadRSEM
 #' @export LoadRSEM
 #'
-LoadRSEM <- function(cells, rsem.filenames, quantitation.method='TPM') {
+LoadRSEM <- function(cells, rsem.filenames,
+                            quantitation.method='TPM',
+                            min.quant.value=0) {
     # create progress bar
     pb <- txtProgressBar(min = 0,
         label = "Reading Expression from RSEM Files",
         max = length(cells),
         style = 3)
 
-    nonzero_cell_maps <- c()
+    above.threshold.cell.maps <- c()
 
     for (i in 1:length(cells)) {
-        temp_df <- read.table(rsem.filenames[[i]], header = TRUE, sep = "\t")
+        temp.df <- read.table(rsem.filenames[[i]], header = TRUE, sep = "\t")
 
-        temp_df$scaled <- ExtractQuantitationData(temp_df, quantitation.method)
-        temp_df <- temp_df[temp_df$scaled > 0,]
+        temp.df$scaled <- ExtractQuantitationData(temp.df, quantitation.method)
+        temp.df <- temp.df[temp.df$scaled > min.quant.value,]
 
-        temp_map <- hashmap(
-            as.character(temp_df$gene_id),
-            temp_df$scaled
+        temp.map <- hashmap(
+            as.character(temp.df$gene_id),
+            temp.df$scaled
         )
 
-        nonzero_cell_maps <- c(nonzero_cell_maps, temp_map)
+        above.threshold.cell.maps <- c(above.threshold.cell.maps, temp.map)
 
         setTxtProgressBar(pb, i)
     }
 
-    nonzero_genes <- unique(
-        c(unlist(sapply(nonzero_cell_maps, function(a) a$keys())))
+    above.threshold.genes <- unique(
+        c(unlist(sapply(above.threshold.cell.maps, function(a) a$keys())))
     )
 
-    M <- matrix(0, nrow = length(nonzero_genes), ncol = length(cells))
-    rownames(M) <- nonzero_genes
+    M <- matrix(0, nrow = length(above.threshold.genes), ncol = length(cells))
+    rownames(M) <- above.threshold.genes
     colnames(M) <- cells
 
     for (i in 1:length(cells)) {
-        colvals <- nonzero_cell_maps[[i]][[nonzero_genes]]
+        colvals <- above.threshold.cell.maps[[i]][[above.threshold.genes]]
         colvals[is.na(colvals)] <- 0
         M[,i] = colvals
     }

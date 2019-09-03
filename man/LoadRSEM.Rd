@@ -4,7 +4,8 @@
 \alias{LoadRSEM}
 \title{Load Data from RSEM transcript quantitation.}
 \usage{
-LoadRSEM(cells, rsem.filenames, quantitation.method = "TPM")
+LoadRSEM(cells, rsem.filenames, quantitation.method = "TPM",
+  min.quant.value = 0)
 }
 \arguments{
 \item{cells}{character vector containing cell IDs}
@@ -13,6 +14,9 @@ LoadRSEM(cells, rsem.filenames, quantitation.method = "TPM")
 
 \item{quantitation.method}{String, default 'count', returns expected
 counts from RSEM files. 'TPM' also supported.}
+
+\item{min.quant.value}{numeric, containing the minimum quantitation
+a gene must have to be included in the output \code{@data} matrix}
 }
 \value{
 A matrix containing the TPM counts of each ENSG merged from

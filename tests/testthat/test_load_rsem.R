@@ -57,3 +57,15 @@ test_that("count generates correct counts", {
   expect_equal(rsem.assay.count@data["ERCC-00136","cell2"], 0)
 })
 
+
+rsem.assay.min.quant.value <- LoadRSEM(
+    cells = cells,
+    rsem.filenames = rsem.files.fullpath,
+    quantitation.method = 'TPM',
+    min.quant.value=-1
+)
+
+test_that("include all genes", {
+  expect_true(! "ERCC-00164" %in% rownames(rsem.assay.TPM))
+  expect_true("ERCC-00164" %in% rownames(rsem.assay.min.quant.value@data))
+})
