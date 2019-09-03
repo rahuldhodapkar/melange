@@ -13,6 +13,9 @@ transformation and manipulation utilities for use with the popular
 - [Annovar](http://annovar.openbioinformatics.org/) variant annotation hits
     by gene
 
+- [MiXCR](https://mixcr.readthedocs.io/en/master/) B- and T- cell receptor
+    clonotype analysis by cell
+
 ## Installation Instructions
 
 To install a development release of `melange`, simply clone this repository

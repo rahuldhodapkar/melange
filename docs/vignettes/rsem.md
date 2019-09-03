@@ -13,6 +13,8 @@ object for downstream analysis.
 `sample_name.isoforms.results`. Melange loads data at the genes level, and will require the locations
 of the `*.genes.results` files.
 
+## Prepare RSEM files
+
 In R, create two character vectors, one with the names of the cells, and another with the locations
 of the corresponding RSEM genes results files.
 

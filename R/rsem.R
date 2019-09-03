@@ -20,6 +20,7 @@
 #' @param scaling.method switch containing scaling options
 #'
 #' @return a scaled vector of counts
+#'
 ExtractQuantitationData <- function(df, scaling.method) {
     if (scaling.method == "count") {
         return(df$expected_count)
