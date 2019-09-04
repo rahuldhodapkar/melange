@@ -26,8 +26,6 @@ ExtractQuantitationData <- function(df, scaling.method) {
         return(df$expected_count)
     } else if (scaling.method == "TPM") {
         return(df$TPM)
-    } else if (scaling.method == "lengthScaledTPM") {
-        return(df$TPM / df$effective_length)
     }
 }
 
@@ -37,8 +35,8 @@ ExtractQuantitationData <- function(df, scaling.method) {
 #'
 #' @param cells character vector containing cell IDs
 #' @param rsem.filenames character vector containing RSEM file paths.
-#' @param quantitation.method String, default 'count', returns expected
-#'     counts from RSEM files. 'TPM' also supported.
+#' @param quantitation.method String, default 'TPM', returns expected
+#'     counts from RSEM files. 'count' also supported.
 #' @param min.quant.value numeric, containing the minimum quantitation
 #'     a gene must have to be included in the output \code{@data} matrix
 #' 
@@ -87,6 +85,13 @@ LoadRSEM <- function(cells, rsem.filenames,
         setTxtProgressBar(pb, i)
     }
 
+    close(pb)
+
+    pb <- txtProgressBar(min = 0,
+        label = "Collating and generating expression matrix",
+        max = length(cells),
+        style = 3)
+
     above.threshold.genes <- unique(
         c(unlist(sapply(above.threshold.cell.maps, function(a) a$keys())))
     )
@@ -96,11 +101,11 @@ LoadRSEM <- function(cells, rsem.filenames,
     colnames(M) <- cells
 
     for (i in 1:length(cells)) {
+        setTxtProgressBar(pb, i)
         colvals <- above.threshold.cell.maps[[i]][[above.threshold.genes]]
         colvals[is.na(colvals)] <- 0
         M[,i] = colvals
     }
-
     close(pb)
 
     rsem.melange <- Melange(M)
