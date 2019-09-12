@@ -136,7 +136,9 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
         germline_varstrings, rep(1, length(germline_varstrings))
     )
 
-    pb <- txtProgressBar(min = 0,
+    pb <- txtProgressBar(
+        label = "Loading Annovar data files",
+        min = 0,
         max = length(cells),
         style = 3)
 
@@ -151,6 +153,7 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
 
     for (i in 1:length(cells)) {
         if (file.size(annovar.filenames[[i]]) == 0) {
+            grouped_count_maps <- c(grouped_count_maps, hashmap())
             next
         }
 
@@ -206,6 +209,7 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
 
         setTxtProgressBar(pb, i)
     }
+    close(pb)
 
     cell2germ_ct <- hashmap(cells, germline_counts)
     cell2total_ct <- hashmap(cells, total_counts)
@@ -220,10 +224,19 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
     rownames(M) <- nonzero_keys
     colnames(M) <- cells
 
+
+    print("Collating and generating variation matrix")
+    pb <- txtProgressBar(min = 0,
+        label = "Collating and generating variation matrix",
+        max = length(cells),
+        style = 3)
+
     for (i in 1:length(cells)) {
         colvals <- grouped_count_maps[[i]][[nonzero_keys]]
         colvals[is.na(colvals)] <- 0
         M[,i] = colvals
+
+        setTxtProgressBar(pb, i)
     }
     close(pb)
 
