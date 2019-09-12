@@ -159,19 +159,19 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
 
         if (file.size(annovar.exonic.variant.function.filenames[[i]]) == 0) {
             # to allow code to continue gracefully
-            temp_exon_anno_df <- data.frame("Lines" = c(), "MutationType" = c())
+            temp_df$MutationType <- rep(NA, nrow(temp_df))
         }
         else {
             temp_exon_anno_df <- read.table(annovar.exonic.variant.function.filenames[[i]],
                               comment.char = '', header = FALSE, sep = "\t")
+            temp_exon_anno_df[,exonic.variant.function.join.col] <- 
+                gsub("line", "", temp_exon_anno_df[,exonic.variant.function.join.col])
+
+            # add Mutation Type for exonic variants
+            temp_df[,"MutationType"] <- rep(NA, nrow(temp_df))
+            temp_df[as.numeric(temp_exon_anno_df[,exonic.variant.function.join.col]), "MutationType"] <-
+                as.character(temp_exon_anno_df[,exonic.variant.mutation.type.col])
         }
-        temp_exon_anno_df[,exonic.variant.function.join.col] <- 
-            gsub("line", "", temp_exon_anno_df[,exonic.variant.function.join.col])
-        
-        # add Mutation Type for exonic variants
-        temp_df[,"MutationType"] <- rep(NA, nrow(temp_df))
-        temp_df[as.numeric(temp_exon_anno_df[,exonic.variant.function.join.col]), "MutationType"] <-
-            as.character(temp_exon_anno_df[,exonic.variant.mutation.type.col])
 
         temp_df$temp_varstrings <- GenerateVaridFromAnnovarVFF(temp_df)
 
