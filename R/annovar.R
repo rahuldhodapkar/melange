@@ -150,11 +150,21 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
     varstring2gene <- hashmap(c(""), c(""))
 
     for (i in 1:length(cells)) {
+        if (file.size(annovar.filenames[[i]]) == 0) {
+            next
+        }
+
         temp_df <- read.table(annovar.filenames[[i]], 
                                 comment.char = '', header = FALSE, sep = "\t")
 
-        temp_exon_anno_df <- read.table(annovar.exonic.variant.function.filenames[[i]],
+        if (file.size(annovar.exonic.variant.function.filenames[[i]]) == 0) {
+            # to allow code to continue gracefully
+            temp_exon_anno_df <- data.frame("Lines" = c())
+        }
+        else {
+            temp_exon_anno_df <- read.table(annovar.exonic.variant.function.filenames[[i]],
                               comment.char = '', header = FALSE, sep = "\t")
+        }
         temp_exon_anno_df[,exonic.variant.function.join.col] <- 
             gsub("line", "", temp_exon_anno_df[,exonic.variant.function.join.col])
         
