@@ -153,6 +153,11 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
 
     for (i in 1:length(cells)) {
         if (file.size(annovar.filenames[[i]]) == 0) {
+            germline_counts<- c(germline_counts, 0)
+            total_counts <- c(total_counts, 0)
+            spike_in_counts <- c(spike_in_counts, 0)
+            somatic_counts <- c(somatic_counts, 0)
+            
             grouped_count_maps <- c(grouped_count_maps, hashmap(c(""), c(0)))
             next
         }
@@ -223,7 +228,6 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
     M <- matrix(0, nrow = length(nonzero_keys), ncol = length(cells))
     rownames(M) <- nonzero_keys
     colnames(M) <- cells
-
 
     print("Collating and generating variation matrix")
     pb <- txtProgressBar(min = 0,

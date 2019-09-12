@@ -19,7 +19,7 @@ library(melange)
 
 dname = "../testdata/annovar"
 
-cells <- c("cell1", "cell2", "cell3")
+cells <- c("cell1", "cell2", "cell3", "cell4", "cell_no_exons")
 annovar.files <- paste(cells, "anno.variant_function", sep=".")
 annovar.files.fullpath <- paste(dname, annovar.files, sep="/")
 
