@@ -119,6 +119,7 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
                             exonic.only=TRUE, read.depth.norm.col=10,
                             spike.in.regex="^ERCC-", unique.id.cols=c(3,4,5,6,7)) {
 
+    annovar.gene.col <- 2
     annovar.exonic.variant.function.filenames <- 
         gsub("\\.variant_function$", "\\.exonic_variant_function", annovar.filenames)
     exonic.variant.function.join.col <- 1
@@ -146,6 +147,7 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
     somatic_counts <- c()
 
     varstring2mutation.type <- hashmap(c(""), c(""))
+    varstring2gene <- hashmap(c(""), c(""))
 
     for (i in 1:length(cells)) {
         temp_df <- read.table(annovar.filenames[[i]], 
@@ -190,6 +192,7 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
 
         exonic_df <- temp_df[!is.na(temp_df$MutationType),]
         varstring2mutation.type$insert(exonic_df$temp_varstrings, as.character(exonic_df$MutationType))
+        varstring2gene$insert(temp_df$temp_varstrings, temp_df[,annovar.gene.col])
 
         setTxtProgressBar(pb, i)
     }
@@ -221,6 +224,7 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
     annovar.melange@meta.data$somatic.calls <- cell2som_ct[[cells]]
 
     annovar.melange@meta.features$MutationType <- varstring2mutation.type[[rownames(M)]]
+    annovar.melange@meta.features$Gene <- varstring2gene[[rownames(M)]]
 
     return(annovar.melange)
 }
