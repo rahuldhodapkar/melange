@@ -6,7 +6,8 @@
 \usage{
 LoadAnnovar(cells, annovar.filenames, germline.filename,
   reduction = "by_gene", somatic.only = TRUE, exonic.only = TRUE,
-  read.depth.norm.col = 10, spike.in.regex = "^ERCC-")
+  read.depth.norm.col = 10, spike.in.regex = "^ERCC-",
+  unique.id.cols = c(3, 4, 5, 6, 7))
 }
 \arguments{
 \item{cells}{character vector containing cell IDs}
@@ -26,13 +27,17 @@ on predicted somatic variants (subtact germline)}
 \item{exonic.only}{boolean, default TRUE, produce counts based only
 on variants predicted to occur within exons.}
 
-\item{read.depth.norm.col, }{default 10, col with read depth to normalize
+\item{read.depth.norm.col}{default 10, col with read depth to normalize
 variant calls by for single cell analysis. If using the default
 Annovar conversion tools from VCF, this will most likely be column 10.}
 
 \item{spike.in.regex}{regex selection for 'CHR' vcf field inidcating
 synthetic spike-in. Used as a negative control for single-cell
 somatic variant analysis. Default '^ERCC-'}
+
+\item{unique.id.cols}{set of columns that uniquely define a variant in the
+*.variant_function file. Will be used to generate row names for the
+final aggregated data set.}
 }
 \value{
 A matrix containing the reduced counts of each ENSG merged from

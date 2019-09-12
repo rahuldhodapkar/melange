@@ -67,6 +67,9 @@ GroupByGene <- function(df, read.depth.norm.col) {
 #' \code{LoadAnnovar} will automatically extract the location of the corresponding
 #' \code{*.exonic_variant_function} file locally.
 #'
+#' If a local \{*.exonic_variant_function} file is not found, \code{LoadAnnovar}
+#' will fail to load a data matrix.
+#'
 #' @param cells character vector containing cell IDs
 #' @param annovar.filenames character vector containing annovar file paths.
 #' @param reduction reduction to use from annovar to Seurat assay.
@@ -82,9 +85,12 @@ GroupByGene <- function(df, read.depth.norm.col) {
 #'     on predicted somatic variants (subtact germline)
 #' @param exonic.only boolean, default TRUE, produce counts based only
 #'     on variants predicted to occur within exons.
-#' @param read.depth.norm.col, default 10, col with read depth to normalize
+#' @param read.depth.norm.col default 10, col with read depth to normalize
 #'     variant calls by for single cell analysis. If using the default
 #'     Annovar conversion tools from VCF, this will most likely be column 10.
+#' @param unique.id.cols set of columns that uniquely define a variant in the
+#'     *.variant_function file. Will be used to generate row names for the
+#'     final aggregated data set.
 #'
 #' @return A matrix containing the reduced counts of each ENSG merged from
 #'     all cells supplied in a Seurat-importable format.
@@ -111,7 +117,12 @@ GroupByGene <- function(df, read.depth.norm.col) {
 LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
                             reduction="by_gene", somatic.only=TRUE,
                             exonic.only=TRUE, read.depth.norm.col=10,
-                            spike.in.regex="^ERCC-") {
+                            spike.in.regex="^ERCC-", unique.id.cols=c(3,4,5,6,7)) {
+
+    annovar.exonic.variant.function.filenames <- 
+        gsub("\\.variant_function$", "\\.exonic_variant_function", annovar.filenames)
+    exonic.variant.function.join.col <- 1
+    exonic.variant.mutation.type.col <- 2
 
     if (! is.null(germline.filename) ) {
         germline_df <- read.table(germline.filename, 
@@ -134,19 +145,32 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
     spike_in_counts <- c()
     somatic_counts <- c()
 
+    varstring2mutation.type <- hashmap(c(""), c(""))
+
     for (i in 1:length(cells)) {
         temp_df <- read.table(annovar.filenames[[i]], 
                                 comment.char = '', header = FALSE, sep = "\t")
-        temp_varstrings <- GenerateVaridFromAnnovarVFF(temp_df)
 
-        germline_hits <- ! is.na(germ.map[[temp_varstrings]])
+        temp_exon_anno_df <- read.table(annovar.exonic.variant.function.filenames[[i]],
+                              comment.char = '', header = FALSE, sep = "\t")
+        temp_exon_anno_df[,exonic.variant.function.join.col] <- 
+            gsub("line", "", temp_exon_anno_df[,exonic.variant.function.join.col])
+        
+        # add Mutation Type for exonic variants
+        temp_df[,"MutationType"] <- rep(NA, nrow(temp_df))
+        temp_df[as.numeric(temp_exon_anno_df[,exonic.variant.function.join.col]), "MutationType"] <-
+            as.character(temp_exon_anno_df[,exonic.variant.mutation.type.col])
+
+        temp_df$temp_varstrings <- GenerateVaridFromAnnovarVFF(temp_df)
+
+        germline_hits <- ! is.na(germ.map[[temp_df$temp_varstrings]])
         num_germline_hits <- sum(germline_hits, na.rm = TRUE)
-        num_spike_in_hits <- sum(grepl(spike.in.regex, temp_varstrings), na.rm=TRUE)
+        num_spike_in_hits <- sum(grepl(spike.in.regex, temp_df$temp_varstrings), na.rm=TRUE)
         num_total_hits <- nrow(temp_df)
-        num_somatic_hits <- sum(is.na(germ.map[[temp_varstrings]]), na.rm = TRUE)
+        num_somatic_hits <- sum(is.na(germ.map[[temp_df$temp_varstrings]]), na.rm = TRUE)
 
         if (somatic.only) {
-            temp_df <- temp_df[is.na(germ.map[[temp_varstrings]]),]
+            temp_df <- temp_df[is.na(germ.map[[temp_df$temp_varstrings]]),]
         }
 
         germline_counts <- c(germline_counts, num_germline_hits)
@@ -158,11 +182,14 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
             temp_df <- temp_df[str_detect(temp_df[,1], "exonic"),]
         }
 
-        group_out <- GroupByGene(temp_df, 
-            read.depth.norm.col=read.depth.norm.col)
-        temp_counts_map <- group_out$norm
+        temp_counts_map <- hashmap(
+            temp_df$temp_varstrings, 
+            temp_df[,read.depth.norm.col])
 
         grouped_count_maps <- c(grouped_count_maps, temp_counts_map)
+
+        exonic_df <- temp_df[!is.na(temp_df$MutationType),]
+        varstring2mutation.type$insert(exonic_df$temp_varstrings, as.character(exonic_df$MutationType))
 
         setTxtProgressBar(pb, i)
     }
@@ -192,6 +219,8 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
     annovar.melange@meta.data$total.calls <- cell2total_ct[[cells]]
     annovar.melange@meta.data$spike.in.calls <- cell2spike_ct[[cells]]
     annovar.melange@meta.data$somatic.calls <- cell2som_ct[[cells]]
+
+    annovar.melange@meta.features$MutationType <- varstring2mutation.type[[rownames(M)]]
 
     return(annovar.melange)
 }
