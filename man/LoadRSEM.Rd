@@ -12,8 +12,8 @@ LoadRSEM(cells, rsem.filenames, quantitation.method = "TPM",
 
 \item{rsem.filenames}{character vector containing RSEM file paths.}
 
-\item{quantitation.method}{String, default 'count', returns expected
-counts from RSEM files. 'TPM' also supported.}
+\item{quantitation.method}{String, default 'TPM', returns expected
+counts from RSEM files. 'count' also supported.}
 
 \item{min.quant.value}{numeric, containing the minimum quantitation
 a gene must have to be included in the output \code{@data} matrix}

@@ -62,6 +62,7 @@ LoadRSEM <- function(cells, rsem.filenames,
                             quantitation.method='TPM',
                             min.quant.value=0) {
     # create progress bar
+    print("Reading Expression from RSEM Files")
     pb <- txtProgressBar(min = 0,
         label = "Reading Expression from RSEM Files",
         max = length(cells),
@@ -87,6 +88,7 @@ LoadRSEM <- function(cells, rsem.filenames,
 
     close(pb)
 
+    print("Collating and generating expression matrix")
     pb <- txtProgressBar(min = 0,
         label = "Collating and generating expression matrix",
         max = length(cells),

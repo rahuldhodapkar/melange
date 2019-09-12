@@ -23,11 +23,6 @@ cells <- c("cell1", "cell2", "cell3")
 rsem.files <- paste(cells, "rsem_quant.genes.results", sep=".")
 rsem.files.fullpath <- paste(dname, rsem.files, sep="/")
 
-rsem.assay.lengthScaledTPM <- LoadRSEM(
-    cells = cells,
-    rsem.filenames = rsem.files.fullpath,
-    quantitation.method = 'lengthScaledTPM')
-
 rsem.assay.TPM <- LoadRSEM(
     cells = cells,
     rsem.filenames = rsem.files.fullpath,
@@ -41,12 +36,7 @@ rsem.assay.count <- LoadRSEM(
 )
 
 test_that("RSEM files to Melange", {
-  expect_is(rsem.assay.lengthScaledTPM, "Melange")
   expect_is(rsem.assay.TPM, "Melange")
-})
-test_that("lengthScaledTPM generates correct counts", {
-  expect_equal(rsem.assay.lengthScaledTPM@data["ERCC-00136","cell1"], 663.68 / 777.31)
-  expect_equal(rsem.assay.lengthScaledTPM@data["ERCC-00136","cell2"], 0)
 })
 test_that("TPM generates correct counts", {
   expect_equal(rsem.assay.TPM@data["ERCC-00136","cell1"], 663.68)

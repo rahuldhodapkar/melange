@@ -23,12 +23,6 @@ cells <- c("cell1", "cell2", "cell3")
 rsem.files <- paste(cells, "rsem_quant.genes.results", sep=".")
 rsem.files.fullpath <- paste(dname, rsem.files, sep="/")
 
-rsem.assay.lengthScaledTPM <- SeuratAssayFromMelange(LoadRSEM(
-    cells = cells,
-    rsem.filenames = rsem.files.fullpath,
-    quantitation.method = 'lengthScaledTPM'
-))
-
 rsem.assay.TPM <- SeuratAssayFromMelange(LoadRSEM(
     cells = cells,
     rsem.filenames = rsem.files.fullpath,
@@ -42,6 +36,6 @@ rsem.assay.count <- SeuratAssayFromMelange(LoadRSEM(
 ))
 
 test_that("RSEM files to Seurat Assay from Melange", {
-  expect_is(rsem.assay.lengthScaledTPM, "Assay")
+  expect_is(rsem.assay.count, "Assay")
   expect_is(rsem.assay.TPM, "Assay")
 })
