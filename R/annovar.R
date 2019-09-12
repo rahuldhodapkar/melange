@@ -159,7 +159,7 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
 
         if (file.size(annovar.exonic.variant.function.filenames[[i]]) == 0) {
             # to allow code to continue gracefully
-            temp_exon_anno_df <- data.frame("Lines" = c())
+            temp_exon_anno_df <- data.frame("Lines" = c(), "MutationType" = c())
         }
         else {
             temp_exon_anno_df <- read.table(annovar.exonic.variant.function.filenames[[i]],
