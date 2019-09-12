@@ -153,7 +153,7 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
 
     for (i in 1:length(cells)) {
         if (file.size(annovar.filenames[[i]]) == 0) {
-            grouped_count_maps <- c(grouped_count_maps, hashmap())
+            grouped_count_maps <- c(grouped_count_maps, hashmap(c(""), c(0)))
             next
         }
 
