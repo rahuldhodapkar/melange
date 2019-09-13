@@ -157,7 +157,7 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
             total_counts <- c(total_counts, 0)
             spike_in_counts <- c(spike_in_counts, 0)
             somatic_counts <- c(somatic_counts, 0)
-            
+
             grouped_count_maps <- c(grouped_count_maps, hashmap(c(""), c(0)))
             next
         }
@@ -244,14 +244,19 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
     }
     close(pb)
 
+    # Coerce Values to Valid Names for R
+    varstrings <- rownames(M)
+    rownames(M) <- make.names(rownames(M))
+
     annovar.melange <- Melange(M)
+    annovar.melange@meta.features$VariantId <- varstrings
+    annovar.melange@meta.features$MutationType <- varstring2mutation.type[[varstrings]]
+    annovar.melange@meta.features$Gene <- varstring2gene[[varstrings]]
+
     annovar.melange@meta.data$germline.calls <- cell2germ_ct[[cells]]
     annovar.melange@meta.data$total.calls <- cell2total_ct[[cells]]
     annovar.melange@meta.data$spike.in.calls <- cell2spike_ct[[cells]]
     annovar.melange@meta.data$somatic.calls <- cell2som_ct[[cells]]
-
-    annovar.melange@meta.features$MutationType <- varstring2mutation.type[[rownames(M)]]
-    annovar.melange@meta.features$Gene <- varstring2gene[[rownames(M)]]
 
     return(annovar.melange)
 }
