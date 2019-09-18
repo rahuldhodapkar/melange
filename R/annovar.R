@@ -183,8 +183,7 @@ LoadAnnovar <- function(cells, annovar.filenames, germline.filename,
 
         temp_df$temp_varstrings <- GenerateVaridFromAnnovarVFF(temp_df)
 
-        germline_hits <- ! is.na(germ.map[[temp_df$temp_varstrings]])
-        num_germline_hits <- sum(germline_hits, na.rm = TRUE)
+        num_germline_hits <- sum(! is.na(germ.map[[temp_df$temp_varstrings]]), na.rm = TRUE)
         num_spike_in_hits <- sum(grepl(spike.in.regex, temp_df$temp_varstrings), na.rm=TRUE)
         num_total_hits <- nrow(temp_df)
         num_somatic_hits <- sum(is.na(germ.map[[temp_df$temp_varstrings]]), na.rm = TRUE)
