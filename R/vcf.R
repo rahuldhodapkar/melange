@@ -58,7 +58,10 @@ LoadVCF <- function(cells, vcf.filenames, consolidation.factor=10000) {
             next
         }
         
-        grouped.names <- paste0("_", temp.df[,VCF.CHROMOSOME.COL], ":", temp.df[,VCF.POS.COL])
+        grouped.names <- paste0("_",
+            temp.df[,VCF.CHROMOSOME.COL],
+             ":",
+            as.integer(temp.df[,VCF.POS.COL] / consolidation.factor))
         names.table <- table(grouped.names)
 
         temp.map <- hashmap(
