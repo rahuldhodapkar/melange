@@ -56,7 +56,7 @@ LoadVCF <- function(cells, vcf.filenames, consolidation.factor=10000) {
             next
         }
 
-        temp.df <- read.csv(vcf.filenames[[i]], sep='\t', comment.char='#')
+        temp.df <- read.table(vcf.filenames[[i]], sep='\t', comment.char='#')
         grouped.names <- paste0("_", temp.df[,VCF.CHROMOSOME.COL], ":", temp.df[,VCF.POS.COL])
         names.table <- table(grouped.names)
 

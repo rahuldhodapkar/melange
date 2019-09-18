@@ -3,6 +3,7 @@
 export(LoadAnnovar)
 export(LoadMiXCR)
 export(LoadRSEM)
+export(LoadVCF)
 export(Melange)
 export(SeuratAssayFromMelange)
 importFrom(Seurat,CreateAssayObject)
