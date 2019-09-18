@@ -51,12 +51,13 @@ LoadVCF <- function(cells, vcf.filenames, consolidation.factor=10000) {
 
     nonzero.cell.maps <- c()
     for (i in 1:length(cells)) {
-        if (file.size(vcf.filenames[[i]]) == 0) {
+        
+        temp.df <- try(read.table(vcf.filenames[[i]], sep='\t', comment.char='#'))
+        if (inherits(temp.df, 'try-error')) {
             nonzero.cell.maps <- c(nonzero.cell.maps, empty.map)
             next
         }
-
-        temp.df <- read.table(vcf.filenames[[i]], sep='\t', comment.char='#')
+        
         grouped.names <- paste0("_", temp.df[,VCF.CHROMOSOME.COL], ":", temp.df[,VCF.POS.COL])
         names.table <- table(grouped.names)
 
