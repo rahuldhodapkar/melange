@@ -20,7 +20,8 @@
 #' mutational frequency.
 #'
 #' @param cells character vector containing cell IDs
-#' @param vcf.filenames character vector containing VCF file paths.
+#' @param vcf.filenames character vector containing VCF file paths
+#' @param germline.filename single filename for germline vcf
 #' @param consolidation.factor the factor to use for dividing 
 #' 
 #' @return a melange object with consolidated variants by consolidation.factor
@@ -34,13 +35,23 @@
 #' @rdname LoadVCF
 #' @export LoadVCF
 #' 
-LoadVCF <- function(cells, vcf.filenames, consolidation.factor=10000) {
+LoadVCF <- function(cells, vcf.filenames, germline.filename, consolidation.factor=10000) {
 
     VCF.CHROMOSOME.COL <- 1
     VCF.POS.COL <- 2
 
     empty.map <- hashmap(c(""), c(0))
     empty.map$clear()
+
+    print("Reading germline VCF file")
+    germline.df <- read.table(germline.filename, sep='\t', comment.char='#')
+    code2germhits <- hashmap(
+        paste0("_",
+            germline.df[,VCF.CHROMOSOME.COL],
+             ":",
+            germline.df[,VCF.POS.COL]),
+        rep(1, nrow(germline.df))
+    )
 
     # create progress bar
     print("Reading variants from VCF files")
@@ -57,6 +68,18 @@ LoadVCF <- function(cells, vcf.filenames, consolidation.factor=10000) {
             nonzero.cell.maps <- c(nonzero.cell.maps, empty.map)
             next
         }
+
+        # isolate somatic variants only
+        temp.df <- temp.df[
+            !is.na(
+                code2germhits[[
+                    paste0("_",
+                    temp.df[,VCF.CHROMOSOME.COL],
+                     ":",
+                    temp.df[,VCF.POS.COL] / consolidation.factor)
+                ]]
+            )
+        ,]
         
         grouped.names <- paste0("_",
             temp.df[,VCF.CHROMOSOME.COL],

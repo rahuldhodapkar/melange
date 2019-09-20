@@ -4,12 +4,15 @@
 \alias{LoadVCF}
 \title{Load data from VCF output files}
 \usage{
-LoadVCF(cells, vcf.filenames, consolidation.factor = 10000)
+LoadVCF(cells, vcf.filenames, germline.filename,
+  consolidation.factor = 10000)
 }
 \arguments{
 \item{cells}{character vector containing cell IDs}
 
-\item{vcf.filenames}{character vector containing VCF file paths.}
+\item{vcf.filenames}{character vector containing VCF file paths}
+
+\item{germline.filename}{single filename for germline vcf}
 
 \item{consolidation.factor}{the factor to use for dividing}
 }

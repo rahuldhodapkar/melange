@@ -22,11 +22,13 @@ dname = "../testdata/vcf"
 cells <- c("cell1", "cell2", "cell3")
 vcf.files <- paste(cells, "vcf", sep=".")
 vcf.files.fullpath <- paste(dname, vcf.files, sep="/")
+germline.filename <- paste(dname, 'germline.vcf', sep='/')
 
 
 vcf.melange <- LoadVCF(
     cells=cells,
-    vcf.filenames=vcf.files.fullpath
+    vcf.filenames=vcf.files.fullpath,
+    germline.filename=germline.filename
 )
 
 test_that("Annovar files to Melange", {
