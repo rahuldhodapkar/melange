@@ -71,7 +71,7 @@ LoadVCF <- function(cells, vcf.filenames, germline.filename, consolidation.facto
 
         # isolate somatic variants only
         temp.df <- temp.df[
-            !is.na(
+            is.na(
                 code2germhits[[
                     paste0("_",
                     temp.df[,VCF.CHROMOSOME.COL],
