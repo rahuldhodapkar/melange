@@ -76,7 +76,7 @@ LoadVCF <- function(cells, vcf.filenames, germline.filename, consolidation.facto
                     paste0("_",
                     temp.df[,VCF.CHROMOSOME.COL],
                      ":",
-                    temp.df[,VCF.POS.COL] / consolidation.factor)
+                    temp.df[,VCF.POS.COL])
                 ]]
             )
         ,]
